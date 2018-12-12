@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2015
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NgRegistrator", "NgRegistrator\NgRegistrator.csproj", "{C2A8E831-24A5-4F89-8A8B-3768C030DD46}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2A8E831-24A5-4F89-8A8B-3768C030DD46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2A8E831-24A5-4F89-8A8B-3768C030DD46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2A8E831-24A5-4F89-8A8B-3768C030DD46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2A8E831-24A5-4F89-8A8B-3768C030DD46}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1EA90C0B-2648-4764-87D3-E7387F86DA6E}
+	EndGlobalSection
+EndGlobal
