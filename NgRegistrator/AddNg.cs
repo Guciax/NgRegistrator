@@ -76,13 +76,23 @@ namespace NgRegistrator
             this.ActiveControl = textBox1;
         }
 
+        internal static string ShortenPcbSerial(string inputId)
+        {
+            if (!inputId.Contains("_")) return inputId;
+            if (inputId.Length <= 50) return inputId;
+
+            string[] split = inputId.Split('_');
+            return $"{split[split.Length - 2]}_{split[split.Length - 1]}";
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             if(selectedButton!="")
             {
                 if (textBox1.Text.Trim()!="")
                 {
-                    SqlOperations.RegisterNgPcbToMes(textBox1.Text, selectedButton);
+                    string serial = ShortenPcbSerial(textBox1.Text);
+                    SqlOperations.RegisterNgPcbToMes(serial, selectedButton);
                     this.Close();
                 }
                 else
