@@ -35,5 +35,41 @@ namespace NgRegistrator
                 }
             }
         }
+
+        public static void InsertPcbToNgTable(string serial, string result, string ngReason)
+        {
+            using (SqlConnection openCon = new SqlConnection(@"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;"))
+            {
+                openCon.Open();
+                    string save = "INSERT into tb_NG_tracking (serial_no, result, ng_type, datetime) VALUES (@serial_no, @result, @ng_type, @datetime)";
+                    using (SqlCommand querySave = new SqlCommand(save))
+                    {
+                        querySave.Connection = openCon;
+                        querySave.Parameters.Add("@serial_no", SqlDbType.NVarChar).Value = serial;
+                        querySave.Parameters.Add("@result", SqlDbType.NVarChar).Value = result;
+                        querySave.Parameters.Add("@ng_type", SqlDbType.NVarChar).Value = ngReason;
+                        querySave.Parameters.Add("@datetime", SqlDbType.SmallDateTime).Value = DateTime.Now;
+                        querySave.ExecuteNonQuery();
+                    }
+            }
+        }
+
+        public static bool CheckIfSerialIsInNgTable(string serial)
+        {
+            DataTable tabletoFill = new DataTable();
+
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;";
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = conn;
+            command.CommandText = @"SELECT serial_no,result,ng_type,datetime,rework_result,rework_datetime,post_rework_vi_result,post_rework_OQA_result FROM tb_NG_tracking WHERE serial_no=@serial";
+            command.Parameters.AddWithValue("@serial", serial);
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+
+            adapter.Fill(tabletoFill);
+
+            return tabletoFill.Rows.Count > 0;
+        }
     }
 }

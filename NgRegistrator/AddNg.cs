@@ -91,8 +91,14 @@ namespace NgRegistrator
             {
                 if (textBox1.Text.Trim()!="")
                 {
+                    string result = "NG";
+                    if (!selectedButton.StartsWith("ng")) { result = "SCR"; }
                     string serial = ShortenPcbSerial(textBox1.Text);
                     SqlOperations.RegisterNgPcbToMes(serial, selectedButton);
+                    if (!SqlOperations.CheckIfSerialIsInNgTable(serial))
+                    {
+                        SqlOperations.InsertPcbToNgTable(serial, result, selectedButton);
+                    }
                     this.Close();
                 }
                 else
