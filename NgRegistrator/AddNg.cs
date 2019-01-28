@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using MST.MES;
 
 namespace NgRegistrator
 {
@@ -14,6 +16,7 @@ namespace NgRegistrator
         string[] scrapButtons = new string[] { "scrapBrakLutowia", "scrapBrakDiodyLed", "scrapBrakResConn", "scrapPrzesuniecieLed", "scrapPrzesuniecieResConn", "scrapZabrudzenieLed", "scrapUszkodzenieMechaniczneLed", "scrapUszkodzenieConn", "scrapWadaFabrycznaDiody", "scrapUszkodzonePcb", "scrapWadaNaklejki", "scrapSpalonyConn", "scrapInne" };
         string selectedButton = "";
         Button previousButton = null;
+        List<Image> ImagesList = new List<Image>();
 
         public AddNg()
         {
@@ -22,9 +25,10 @@ namespace NgRegistrator
             {
                 Button ngButton = new Button();
                 ngButton.Text = ng;
+                ngButton.Tag = ng.Replace("ng", "");
                 ngButton.BackColor = Color.Red;
                 ngButton.ForeColor = Color.White;
-                ngButton.Size = new Size(170, 40);
+                ngButton.Size = new Size(flowNgPanel.Width, 40);
 
                 flowNgPanel.Controls.Add(ngButton);
                 this.TopMost = true;
@@ -35,9 +39,10 @@ namespace NgRegistrator
             {
                 Button scrapButton = new Button();
                 scrapButton.Text = scrap;
+                scrapButton.Tag = scrap.Replace("scrap", "");
                 scrapButton.BackColor = Color.Black;
                 scrapButton.ForeColor = Color.White;
-                scrapButton.Size = new Size(170, 40);
+                scrapButton.Size = new Size(flowScrapPanel.Width, 40);
                 scrapButton.MouseClick += Button_MouseClick;
 
                 flowScrapPanel.Controls.Add(scrapButton);
@@ -58,17 +63,41 @@ namespace NgRegistrator
                     previousButton.BackColor = Color.Black;
                 }
             }
+
             Button but = (Button)sender;
             but.BackColor = Color.White;
             but.ForeColor = Color.Black;
             selectedButton = but.Text;
             previousButton = but;
+
+            foreach (var img in ImagesList)
+            {
+                if (img.Tag.ToString() == but.Tag.ToString())
+                {
+                    pictureBox1.Image = img;
+                }
+            }
         }
 
         private void AddNg_Load(object sender, EventArgs e)
         {
             this.ActiveControl = textBox1;
-            this.TopMost = true;
+            //this.TopMost = true;
+
+            DirectoryInfo dir = new DirectoryInfo(@"Zdjecia");
+            if (dir.Exists)
+            {
+                FileInfo[] files = dir.GetFiles();
+                foreach (var file in files)
+                {
+                    if (file.Extension.ToUpper() == ".PNG")
+                    {
+                        Image img = Image.FromFile(file.FullName);
+                        img.Tag = file.Name.Split('.')[0];
+                        ImagesList.Add(img);
+                    }
+                }
+            }
         }
 
         private void textBox1_Leave(object sender, EventArgs e)
@@ -87,7 +116,7 @@ namespace NgRegistrator
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if(selectedButton!="")
+            if (selectedButton != "") 
             {
                 if (textBox1.Text.Trim()!="")
                 {

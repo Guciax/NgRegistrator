@@ -38,10 +38,16 @@ namespace NgRegistrator
 
         public static void InsertPcbToNgTable(string serial, string result, string ngReason)
         {
+            string orderNo = "";
+            string[] serialSplitted = serial.Split('_');
+            if (serialSplitted.Length==3)
+            {
+                orderNo = serialSplitted[1];
+            }
             using (SqlConnection openCon = new SqlConnection(@"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;"))
             {
                 openCon.Open();
-                    string save = "INSERT into tb_NG_tracking (serial_no, result, ng_type, datetime) VALUES (@serial_no, @result, @ng_type, @datetime)";
+                    string save = "INSERT into tb_NG_tracking (serial_no, result, ng_type, datetime, order_no) VALUES (@serial_no, @result, @ng_type, @datetime, @order_no)";
                     using (SqlCommand querySave = new SqlCommand(save))
                     {
                         querySave.Connection = openCon;
@@ -49,6 +55,7 @@ namespace NgRegistrator
                         querySave.Parameters.Add("@result", SqlDbType.NVarChar).Value = result;
                         querySave.Parameters.Add("@ng_type", SqlDbType.NVarChar).Value = ngReason;
                         querySave.Parameters.Add("@datetime", SqlDbType.SmallDateTime).Value = DateTime.Now;
+                        querySave.Parameters.Add("@order_no", SqlDbType.NVarChar).Value = orderNo;
                         querySave.ExecuteNonQuery();
                     }
             }
