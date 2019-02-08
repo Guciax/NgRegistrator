@@ -155,7 +155,6 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "AddNg";
             this.Text = "AddNg";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.AddNg_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);

@@ -36,14 +36,9 @@ namespace NgRegistrator
             }
         }
 
-        public static void InsertPcbToNgTable(string serial, string result, string ngReason)
+        public static void InsertPcbToNgTable(string serial, string result, string ngReason, string orderNo)
         {
-            string orderNo = "";
-            string[] serialSplitted = serial.Split('_');
-            if (serialSplitted.Length==3)
-            {
-                orderNo = serialSplitted[1];
-            }
+            
             using (SqlConnection openCon = new SqlConnection(@"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;"))
             {
                 openCon.Open();

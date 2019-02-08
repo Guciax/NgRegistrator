@@ -17,8 +17,9 @@ namespace NgRegistrator
         string selectedButton = "";
         Button previousButton = null;
         List<Image> ImagesList = new List<Image>();
+        private readonly string deviceMonikerString;
 
-        public AddNg()
+        public AddNg(string deviceMonikerString)
         {
             InitializeComponent();
             foreach (var ng in ngButtons)
@@ -47,6 +48,8 @@ namespace NgRegistrator
 
                 flowScrapPanel.Controls.Add(scrapButton);
             }
+
+            this.deviceMonikerString = deviceMonikerString;
         }
 
         private void Button_MouseClick(object sender, MouseEventArgs e)
@@ -84,7 +87,10 @@ namespace NgRegistrator
             this.ActiveControl = textBox1;
             //this.TopMost = true;
 
-            DirectoryInfo dir = new DirectoryInfo(@"Zdjecia");
+            string dirString = @"Zdjecia";
+            if (Directory.Exists(@"Y:\APPS\Produkcja LGI\Kontrola Wzrokowa Karta Pracy 2.0\Zdjecia")) dirString= @"Y:\APPS\Produkcja LGI\Kontrola Wzrokowa Karta Pracy 2.0\Zdjecia";
+
+            DirectoryInfo dir = new DirectoryInfo(dirString);
             if (dir.Exists)
             {
                 FileInfo[] files = dir.GetFiles();
@@ -120,15 +126,38 @@ namespace NgRegistrator
             {
                 if (textBox1.Text.Trim()!="")
                 {
-                    string result = "NG";
-                    if (!selectedButton.StartsWith("ng")) { result = "SCR"; }
-                    string serial = ShortenPcbSerial(textBox1.Text);
-                    SqlOperations.RegisterNgPcbToMes(serial, selectedButton);
-                    if (!SqlOperations.CheckIfSerialIsInNgTable(serial))
+                    if (textBox1.Text.Split('_').Length == 3)
                     {
-                        SqlOperations.InsertPcbToNgTable(serial, result, selectedButton);
+                        string result = "NG";
+                        if (!selectedButton.StartsWith("ng")) { result = "SCR"; }
+                        string serial = ShortenPcbSerial(textBox1.Text);
+                        //SqlOperations.RegisterNgPcbToMes(serial, selectedButton); old
+                        if (!SqlOperations.CheckIfSerialIsInNgTable(serial))
+                        {
+                            using (PictureForm camForm = new PictureForm(deviceMonikerString, selectedButton))
+                            {
+                                if (camForm.ShowDialog() == DialogResult.OK)
+                                {
+                                    var ngPicList = camForm.ngPicturesList;
+                                    string orderNo = "";
+                                    string[] serialSplitted = serial.Split('_');
+                                    if (serialSplitted.Length == 3)
+                                    {
+                                        orderNo = serialSplitted[1];
+                                    }
+                                    SavePics.SaveImagesToFiles(ngPicList, DateTime.Now.ToString("dd-MM-yyyy"), orderNo, serial);
+                                    SqlOperations.InsertPcbToNgTable(serial, result, selectedButton, orderNo);
+                                }
+                            }
+
+                        }
+                        this.Close();
                     }
-                    this.Close();
+                    else
+                    {
+                        MessageBox.Show(textBox1.Text + Environment.NewLine + "Nieprawidłowy format kodu QR");
+                        textBox1.Text = "";
+                    }
                 }
                 else
                 {

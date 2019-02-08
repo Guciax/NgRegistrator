@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AForge.Video.DirectShow;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -35,8 +36,24 @@ namespace NgRegistrator
 
         private void button1_Click(object sender, EventArgs e)
         {
-            AddNg addForm = new AddNg();
-            addForm.ShowDialog();
+            FilterInfoCollection CaptureDevice = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            List<string> devices = new List<string>();
+            foreach (FilterInfo dev in CaptureDevice)
+            {
+                devices.Add(dev.MonikerString);
+            }
+            if (devices.Count > 0)
+            {
+                using (AddNg addForm = new AddNg(devices[0]))
+                {
+                    addForm.ShowDialog();
+                }
+                    
+            }
+            else
+            {
+                MessageBox.Show("Kamera nie podłączona!");
+            }
         }
     }
 }
